@@ -437,6 +437,10 @@ int FTI_Snapshot() {
             exit(1);
         }
     } else { // If it is a checkpoint test
+        if (FTI_Conf.notifications)
+        {
+            FTI_Print("Checking notifications", FTI_INFO);
+        }
         FTI_UpdateIterTime();
         if (FTI_Exec.ckptNext == FTI_Exec.ckptIcnt)
         { // If it is time to check for possible ckpt. (every minute)

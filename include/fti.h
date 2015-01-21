@@ -177,6 +177,7 @@ typedef struct FTIT_configuration {     /** Configuration metadata.        */
     int             blockSize;          /** Communication block size.      */
     int             tag;                /** Tag for MPI messages in FTI.   */
     int             test;               /** TRUE if local test.            */
+    int             notifications;      /** TRUE to accept notifications.  */
     int             l3WordSize;         /** RS encoding word size.         */
     char            localDir[FTI_BUFS]; /** Local directory.               */
     char            glbalDir[FTI_BUFS]; /** Global directory.              */

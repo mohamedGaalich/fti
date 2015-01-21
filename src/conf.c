@@ -95,22 +95,23 @@ int FTI_ReadConf(FTIT_injection *FTI_Inje) {
     snprintf(FTI_Conf.glbalDir, FTI_BUFS, "%s", par);
     par = iniparser_getstring(ini, "Basic:meta_dir", NULL);
     snprintf(FTI_Conf.metadDir, FTI_BUFS, "%s", par);
-    FTI_Ckpt[1].ckptIntv = (int) iniparser_getint(ini, "Basic:ckpt_l1", -1);
-    FTI_Ckpt[2].ckptIntv = (int) iniparser_getint(ini, "Basic:ckpt_l2", -1);
-    FTI_Ckpt[3].ckptIntv = (int) iniparser_getint(ini, "Basic:ckpt_l3", -1);
-    FTI_Ckpt[4].ckptIntv = (int) iniparser_getint(ini, "Basic:ckpt_l4", -1);
-    FTI_Ckpt[1].isInline = (int) 1;
-    FTI_Ckpt[2].isInline = (int) iniparser_getint(ini, "Basic:inline_l2", 1);
-    FTI_Ckpt[3].isInline = (int) iniparser_getint(ini, "Basic:inline_l3", 1);
-    FTI_Ckpt[4].isInline = (int) iniparser_getint(ini, "Basic:inline_l4", 1);
+    FTI_Ckpt[1].ckptIntv    = (int) iniparser_getint(ini, "Basic:ckpt_l1", -1);
+    FTI_Ckpt[2].ckptIntv    = (int) iniparser_getint(ini, "Basic:ckpt_l2", -1);
+    FTI_Ckpt[3].ckptIntv    = (int) iniparser_getint(ini, "Basic:ckpt_l3", -1);
+    FTI_Ckpt[4].ckptIntv    = (int) iniparser_getint(ini, "Basic:ckpt_l4", -1);
+    FTI_Ckpt[1].isInline    = (int) 1;
+    FTI_Ckpt[2].isInline    = (int) iniparser_getint(ini, "Basic:inline_l2", 1);
+    FTI_Ckpt[3].isInline    = (int) iniparser_getint(ini, "Basic:inline_l3", 1);
+    FTI_Ckpt[4].isInline    = (int) iniparser_getint(ini, "Basic:inline_l4", 1);
 
     // Reading/setting configuration metadata
-    FTI_Conf.verbosity = (int) iniparser_getint(ini, "Basic:verbosity", -1);
-    FTI_Conf.saveLastCkpt = (int) iniparser_getint(ini, "Basic:keep_last_ckpt", 0);
-    FTI_Conf.blockSize = (int) iniparser_getint(ini, "Advanced:block_size", -1) * 1024;
-    FTI_Conf.tag = (int) iniparser_getint(ini, "Advanced:mpi_tag", -1);
-    FTI_Conf.test = (int) iniparser_getint(ini, "Advanced:local_test", -1);
-    FTI_Conf.l3WordSize = FTI_WORD;
+    FTI_Conf.verbosity      = (int) iniparser_getint(ini, "Basic:verbosity", -1);
+    FTI_Conf.saveLastCkpt   = (int) iniparser_getint(ini, "Basic:keep_last_ckpt", 0);
+    FTI_Conf.blockSize      = (int) iniparser_getint(ini, "Advanced:block_size", -1) * 1024;
+    FTI_Conf.tag            = (int) iniparser_getint(ini, "Advanced:mpi_tag", -1);
+    FTI_Conf.test           = (int) iniparser_getint(ini, "Advanced:local_test", -1);
+    FTI_Conf.notifications  = (int) iniparser_getint(ini, "Advanced:notifications", 0);
+    FTI_Conf.l3WordSize     = FTI_WORD;
 
     // Reading/setting execution metadata
     FTI_Exec.nbVar = 0;
