@@ -27,6 +27,7 @@ set(SRC_FTI
 	src/recover.c
 	src/postreco.c
 	src/topo.c
+	src/noti.c
 	src/conf.c
 	src/meta.c
 	src/tools.c

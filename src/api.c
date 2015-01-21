@@ -439,7 +439,7 @@ int FTI_Snapshot() {
     } else { // If it is a checkpoint test
         if (FTI_Conf.notifications)
         {
-            FTI_Print("Checking notifications", FTI_INFO);
+            FTI_GetNoti();
         }
         FTI_UpdateIterTime();
         if (FTI_Exec.ckptNext == FTI_Exec.ckptIcnt)
