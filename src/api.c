@@ -437,7 +437,7 @@ int FTI_Snapshot() {
             exit(1);
         }
     } else { // If it is a checkpoint test
-        if (FTI_Conf.notifications)
+        if (FTI_Noti.enable)
         {
             FTI_GetNoti();
         }

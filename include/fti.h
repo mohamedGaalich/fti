@@ -177,7 +177,6 @@ typedef struct FTIT_configuration {     /** Configuration metadata.        */
     int             blockSize;          /** Communication block size.      */
     int             tag;                /** Tag for MPI messages in FTI.   */
     int             test;               /** TRUE if local test.            */
-    int             notifications;      /** TRUE to accept notifications.  */
     int             l3WordSize;         /** RS encoding word size.         */
     char            localDir[FTI_BUFS]; /** Local directory.               */
     char            glbalDir[FTI_BUFS]; /** Global directory.              */
@@ -186,6 +185,20 @@ typedef struct FTIT_configuration {     /** Configuration metadata.        */
     char            gTmpDir[FTI_BUFS];  /** Global temporary directory.    */
     char            mTmpDir[FTI_BUFS];  /** Metadata temporary directory.  */
 } FTIT_configuration;
+
+/*-------------------------------------------------------------------------*/
+/** @typedef    FTIT_notifications
+    @brief      Notifications configuration.
+
+    This type stores the notifications information.
+ */
+/*-------------------------------------------------------------------------*/
+typedef struct FTIT_notifications {     /** Configuration metadata.        */
+    int             enable;             /** TRUE to accept notifications.  */
+    int             size;               /** File size after last event.    */
+    int             position;           /** Position in the file.          */
+    char            filePath[FTI_BUFS]; /** Path to notifications file.    */
+} FTIT_notifications;
 
 /*-------------------------------------------------------------------------*/
 /** @typedef    FTIT_topology
@@ -263,6 +276,9 @@ FTIT_execution      FTI_Exec;
 FTIT_checkpoint     FTI_Ckpt[5];
 /** General configuration information used by FTI.                         */
 FTIT_configuration  FTI_Conf;
+/** General notifications information used by FTI.                         */
+FTIT_notifications  FTI_Noti;
+
 
 /** FTI data type for chars.                                               */
 FTIT_type FTI_CHAR;

@@ -110,8 +110,19 @@ int FTI_ReadConf(FTIT_injection *FTI_Inje) {
     FTI_Conf.blockSize      = (int) iniparser_getint(ini, "Advanced:block_size", -1) * 1024;
     FTI_Conf.tag            = (int) iniparser_getint(ini, "Advanced:mpi_tag", -1);
     FTI_Conf.test           = (int) iniparser_getint(ini, "Advanced:local_test", -1);
-    FTI_Conf.notifications  = (int) iniparser_getint(ini, "Advanced:notifications", 0);
     FTI_Conf.l3WordSize     = FTI_WORD;
+
+    // Reading/setting notification information
+    FTI_Noti.enable         = (int) iniparser_getint(ini, "Advanced:notifications", 0);
+    FTI_Noti.size           = 0;
+    FTI_Noti.position       = 0;
+    sprintf(FTI_Noti.filePath,"notifications.fti");
+    FILE *fh = fopen(FTI_Noti.filePath, "r");
+    if (fh != NULL)
+    {
+        fseek(fh, 0, SEEK_END);
+        FTI_Noti.position = ftell(fh);
+    }
 
     // Reading/setting execution metadata
     FTI_Exec.nbVar = 0;
