@@ -45,7 +45,6 @@ int FTI_GetNoti() {
         FTI_Print("Notifications file NOT accessible.", FTI_DBUG);
         return FTI_NSCS;
     }
-    sprintf(str,"");
     stat(FTI_Noti.filePath, &st);
     size = st.st_size;
     if (size > FTI_Noti.size)
@@ -61,7 +60,24 @@ int FTI_GetNoti() {
         {
             if (fgets(str, FTI_BUFS, fh) != NULL)
             {
-                FTI_Print(str, FTI_WARN);
+                char *noti, *tofree, *stamp, *code, *msg;
+                noti = strdup(str);
+                tofree = noti;
+                stamp = strsep(&noti, "|");
+                code = strsep(&noti, "|");
+                msg = strsep(&noti, "|");
+                if ((stamp != NULL) && (code != NULL) && (msg != NULL))
+                {
+                    if (msg[strlen(msg)-1] == '\n')
+                    {
+                        msg[strlen(msg)-1] = ' ';
+                    }
+                    sprintf(str, "[%s | %s] %s", stamp, code, msg);
+                    FTI_Print(str, FTI_WARN);
+                } else {
+                    FTI_Print("Event message with bad formatting.", FTI_WARN);
+                }
+                free(tofree);
             }
         }
         FTI_Noti.position = ftell(fh);
@@ -69,6 +85,5 @@ int FTI_GetNoti() {
     }
     return FTI_SCES;
 }
-
 
 
