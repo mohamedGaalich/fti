@@ -20,7 +20,54 @@
 #include "fti.h"
 
 #define     FTI_MXNT    3
+#define     FTI_MXRL    10
 
+
+int FTI_RULE[FTI_MXRL][6] =
+{
+  //cmp err cnt lvl fqn intv
+    {01, 54, 00, 04, 02, 060},
+    {-1, -1, -1, -1, -1, -01},
+    {-1, -1, -1, -1, -1, -01},
+    {-1, -1, -1, -1, -1, -01},
+    {-1, -1, -1, -1, -1, -01},
+    {-1, -1, -1, -1, -1, -01},
+    {-1, -1, -1, -1, -1, -01},
+    {-1, -1, -1, -1, -1, -01},
+    {-1, -1, -1, -1, -1, -01},
+    {-1, -1, -1, -1, -1, -01},
+};
+
+int FTI_DecodeNoti(int code, int rl[6])
+{
+    int i, found = 0;
+    if ((code >= 0) && (code < 1000000))
+    {
+        rl[0] = code / 100000;
+        rl[1] = (code-(rl[0]*100000))/1000;
+        rl[2] = (code-(rl[0]*100000))-(rl[1]*1000);
+        for (i = 0; i < FTI_MXRL; i++)
+        {
+            if ((rl[0] == FTI_RULE[i][0]) && (rl[1] == FTI_RULE[i][1]) && (rl[2] >= FTI_RULE[i][2]))
+            {
+                rl[3] = FTI_RULE[i][3];
+                rl[4] = FTI_RULE[i][4];
+                rl[5] = FTI_RULE[i][5];
+                found = 1;
+            }
+        }
+        if (found)
+        {
+            return FTI_SCES;
+        } else {
+            FTI_Print("No action has been set for this kind of event.", FTI_WARN);
+            return FTI_NSCS;
+        }
+    } else {
+        FTI_Print("Notification numeric code out of bounds.", FTI_WARN);
+        return FTI_NSCS;
+    }
+}
 
 /*-------------------------------------------------------------------------*/
 /**
@@ -54,7 +101,6 @@ int FTI_AnalyzeNoti(char noti[FTI_BUFS])
             FTI_Print(str, FTI_WARN);
             if(strlen(code) == 6)
             {
-                FTI_Print("Analyzing notification code.", FTI_WARN);
                 coded = atoi(code);
             } else {
                 FTI_Print("Wrong notification code.", FTI_WARN);
@@ -136,19 +182,23 @@ int FTI_CheckNoti(char noti[FTI_MXNT][FTI_BUFS])
 /*-------------------------------------------------------------------------*/
 int FTI_GetNoti()
 {
-    char noti[FTI_MXNT][FTI_BUFS];
-    int i, code, cnt = FTI_CheckNoti(noti);
+    char noti[FTI_MXNT][FTI_BUFS], str[FTI_BUFS];
+    int i, cnt, code, rule[6] = {-1, -1, -1, -1, -1, -1};
+    cnt = FTI_CheckNoti(noti);
     if (cnt > 0)
     {
         for (i = 0; i < cnt; i++)
         {
             code = FTI_AnalyzeNoti(noti[i]);
-            if ((code > 0) && (code < 1000000))
+            if (code >= 0)
             {
-                int cmp = code / 100000;
-                int err = (code-(cmp*100000))/1000;
-                int nbr = (code-(cmp*100000))-(err*1000);
-                printf("code %d cmp %d err %d nbr %d \n", code, cmp, err, nbr);
+                if (FTI_DecodeNoti(code, rule) == FTI_SCES)
+                {
+                    sprintf(str, "Event #%d in component #%d with %d ocurrences.", rule[1], rule[0], rule[2]);
+                    FTI_Print(str, FTI_WARN);
+                    sprintf(str, "%dX increment in L%d ckpt. frequency during %d min.", rule[4], rule[3], rule[5]);
+                    FTI_Print(str, FTI_WARN);
+                }
             }
         }
     }
