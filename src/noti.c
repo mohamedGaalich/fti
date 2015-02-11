@@ -183,7 +183,8 @@ int FTI_CheckNoti(char noti[FTI_MXNT][FTI_BUFS])
 int FTI_GetNoti()
 {
     char noti[FTI_MXNT][FTI_BUFS], str[FTI_BUFS];
-    int i, cnt, code, rule[6] = {-1, -1, -1, -1, -1, -1};
+    int i, cnt, flag, code, rule[6] = {-1, -1, -1, -1, -1, -1};
+    MPI_Status status;
     cnt = FTI_CheckNoti(noti);
     if (cnt > 0)
     {
@@ -198,8 +199,18 @@ int FTI_GetNoti()
                     FTI_Print(str, FTI_WARN);
                     sprintf(str, "%dX increment in L%d ckpt. frequency during %d min.", rule[4], rule[3], rule[5]);
                     FTI_Print(str, FTI_WARN);
+                    MPI_Ibcast(&code, 1, MPI_INT, FTI_Topo.myRank, FTI_COMM_WORLD, &(FTI_Noti.request));
                 }
             }
+        }
+    }
+    flag = 1;
+    while(flag)
+    {
+        MPI_Iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG, FTI_COMM_WORLD, &flag, &status);
+        if (flag)
+        {
+            FTI_Print("Notification waiting", FTI_WARN);
         }
     }
     return FTI_SCES;

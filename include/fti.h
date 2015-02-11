@@ -198,6 +198,7 @@ typedef struct FTIT_notifications {     /** Configuration metadata.        */
     int             size;               /** File size after last event.    */
     int             position;           /** Position in the file.          */
     char            filePath[FTI_BUFS]; /** Path to notifications file.    */
+    MPI_Request     request;            /** For the notification Ibcast.   */
 } FTIT_notifications;
 
 /*-------------------------------------------------------------------------*/
@@ -239,7 +240,10 @@ typedef struct FTIT_checkpoint {        /** Checkpoint metadata.           */
     char            dir[FTI_BUFS];      /** Checkpoint directory.          */
     char            metaDir[FTI_BUFS];  /** Metadata directory.            */
     int             isInline;           /** TRUE if work is inline.        */
-    int             ckptIntv;           /** Checkpoint interval.           */
+    int             ckptIntv;           /** Current checkpoint interval.   */
+    int             baseIntv;           /** Basic checkpoint interval.     */
+    int             regStart;           /** Iteration start new regime.    */
+    int             regStopt;           /** Iteration stop new regime.     */
 } FTIT_checkpoint;
 
 /*-------------------------------------------------------------------------*/
