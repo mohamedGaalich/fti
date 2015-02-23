@@ -99,6 +99,10 @@ int FTI_ReadConf(FTIT_injection *FTI_Inje) {
     FTI_Ckpt[2].ckptIntv    = (int) iniparser_getint(ini, "Basic:ckpt_l2", -1);
     FTI_Ckpt[3].ckptIntv    = (int) iniparser_getint(ini, "Basic:ckpt_l3", -1);
     FTI_Ckpt[4].ckptIntv    = (int) iniparser_getint(ini, "Basic:ckpt_l4", -1);
+    FTI_Ckpt[1].baseIntv    = FTI_Ckpt[1].ckptIntv;
+    FTI_Ckpt[2].baseIntv    = FTI_Ckpt[2].ckptIntv;
+    FTI_Ckpt[3].baseIntv    = FTI_Ckpt[3].ckptIntv;
+    FTI_Ckpt[4].baseIntv    = FTI_Ckpt[4].ckptIntv;
     FTI_Ckpt[1].isInline    = (int) 1;
     FTI_Ckpt[2].isInline    = (int) iniparser_getint(ini, "Basic:inline_l2", 1);
     FTI_Ckpt[3].isInline    = (int) iniparser_getint(ini, "Basic:inline_l3", 1);

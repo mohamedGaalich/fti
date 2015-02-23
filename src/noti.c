@@ -26,7 +26,7 @@
 int FTI_RULE[FTI_MXRL][6] =
 {
   //cmp err cnt lvl fqn intv
-    {01, 54, 00, 04, 02, 060},
+    {01, 54, 00, 04, 02, 001},
     {-1, -1, -1, -1, -1, -01},
     {-1, -1, -1, -1, -1, -01},
     {-1, -1, -1, -1, -1, -01},
@@ -195,22 +195,34 @@ int FTI_GetNoti()
             {
                 if (FTI_DecodeNoti(code, rule) == FTI_SCES)
                 {
+                    int lv = rule[3];
+                    FTI_Ckpt[lv].ckptIntv = (int)(FTI_Ckpt[lv].baseIntv / rule[4]);
+                    FTI_Ckpt[lv].regStart = FTI_Exec.ckptIcnt;
+                    FTI_Ckpt[lv].regStopt = FTI_Ckpt[lv].regStart + (rule[5] * FTI_Exec.ckptIntv);
                     sprintf(str, "Event #%d in component #%d with %d ocurrences.", rule[1], rule[0], rule[2]);
                     FTI_Print(str, FTI_WARN);
                     sprintf(str, "%dX increment in L%d ckpt. frequency during %d min.", rule[4], rule[3], rule[5]);
                     FTI_Print(str, FTI_WARN);
-                    MPI_Ibcast(&code, 1, MPI_INT, FTI_Topo.myRank, FTI_COMM_WORLD, &(FTI_Noti.request));
+                    sprintf(str, "Base ckpt. interval for L%d is %d, current one is %d", lv, FTI_Ckpt[lv].baseIntv, FTI_Ckpt[lv].ckptIntv);
+                    FTI_Print(str, FTI_WARN);
+                    sprintf(str, "Changed made at iteration %d to be reverted in iteration %d", FTI_Ckpt[lv].regStart, FTI_Ckpt[lv].regStopt);
+                    FTI_Print(str, FTI_WARN);
                 }
             }
         }
     }
-    flag = 1;
-    while(flag)
+    for(i = 1; i < 5; i++)
     {
-        MPI_Iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG, FTI_COMM_WORLD, &flag, &status);
-        if (flag)
+        if (FTI_Ckpt[i].baseIntv != FTI_Ckpt[i].ckptIntv)
         {
-            FTI_Print("Notification waiting", FTI_WARN);
+            if (FTI_Ckpt[i].regStopt <= FTI_Exec.ckptIcnt)
+            {
+                FTI_Ckpt[i].ckptIntv = FTI_Ckpt[i].baseIntv;
+                FTI_Ckpt[i].regStart = 0;
+                FTI_Ckpt[i].regStopt = 0;
+                sprintf(str, "Ckpt. interval L%d reverted at iteration %d", i, FTI_Exec.ckptIcnt);
+                FTI_Print(str, FTI_WARN);
+            }
         }
     }
     return FTI_SCES;

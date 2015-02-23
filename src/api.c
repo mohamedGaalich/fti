@@ -437,10 +437,6 @@ int FTI_Snapshot() {
             exit(1);
         }
     } else { // If it is a checkpoint test
-        if (FTI_Noti.enable)
-        {
-            FTI_GetNoti();
-        }
         FTI_UpdateIterTime();
         if (FTI_Exec.ckptNext == FTI_Exec.ckptIcnt)
         { // If it is time to check for possible ckpt. (every minute)
@@ -460,6 +456,11 @@ int FTI_Snapshot() {
             FTI_Exec.ckptLast = FTI_Exec.ckptNext;
             FTI_Exec.ckptNext = FTI_Exec.ckptNext + FTI_Exec.ckptIntv;
             FTI_Exec.iterTime = MPI_Wtime(); // Reset iteration duration timer
+        } else {
+            if (FTI_Noti.enable)
+            {
+                FTI_GetNoti();
+            }
         }
     }
     return FTI_SCES;
