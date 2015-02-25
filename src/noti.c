@@ -76,7 +76,8 @@ int FTI_DecodeNoti(int code, int rl[6])
     @return     integer         The code of the notification or -1 if error.
 
     This function checks the notification and extracts its code and returns
-    it as an integer.
+    it as an integer. The format of the notification should be as follows:
+    timestamp|code|message
 
  **/
 /*-------------------------------------------------------------------------*/
@@ -196,10 +197,12 @@ int FTI_GetNoti()
                 if (FTI_DecodeNoti(code, rule) == FTI_SCES)
                 {
                     int lv = rule[3];
+                    int next = FTI_Exec.ckptNext;
+                    int half = FTI_Exec.ckptNext - (FTI_Exec.ckptIntv/2);
                     FTI_Ckpt[lv].ckptIntv = (int)(FTI_Ckpt[lv].baseIntv / rule[4]);
-                    FTI_Ckpt[lv].regStart = FTI_Exec.ckptIcnt;
+                    FTI_Ckpt[lv].regStart = (half > FTI_Exec.ckptIcnt) ? half : next;
                     FTI_Ckpt[lv].regStopt = FTI_Ckpt[lv].regStart + (rule[5] * FTI_Exec.ckptIntv);
-                    sprintf(str, "Event #%d in component #%d with %d ocurrences.", rule[1], rule[0], rule[2]);
+                    sprintf(str, "Event #%d in component #%d with %d occurrences.", rule[1], rule[0], rule[2]);
                     FTI_Print(str, FTI_WARN);
                     sprintf(str, "%dX increment in L%d ckpt. frequency during %d min.", rule[4], rule[3], rule[5]);
                     FTI_Print(str, FTI_WARN);
