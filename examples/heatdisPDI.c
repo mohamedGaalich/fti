@@ -123,21 +123,26 @@ int main(int argc, char *argv[])
     //FTI_Protect(1, h, M*nbLines, FTI_DBLE);
     //FTI_Protect(2, g, M*nbLines, FTI_DBLE);
 
-    PDI_start_expose_area();
+    //PDI_start_expose_area();
     PDI_expose("M",&M);
     PDI_expose("nbLines",&nbLines);
-    PDI_expose("i",&i);
-    PDI_expose("h",h);
-    PDI_expose("g",g);
-    PDI_end_expose_area();
+    //PDI_expose("i",&i);
+    //PDI_expose("h",h);
+    //PDI_expose("g",g);
+    //PDI_end_expose_area();
+
 
     wtime = MPI_Wtime();
     for(i = 0; i < ITER_TIMES; i++)
     {
         //int checkpointed = FTI_Snapshot();
-        PDI_expose("i",&i);
-        PDI_expose("h",h);
-        PDI_expose("g",g);
+        PDI_share("i",&i,PDI_OUT);
+        PDI_share("h",h,PDI_OUT);
+        PDI_share("g",g,PDI_OUT);
+        PDI_event("Snapshot");
+        PDI_reclaim("i");
+        PDI_reclaim("h");
+        PDI_reclaim("g");
         localerror = doWork(nbProcs, rank, M, nbLines, g, h);
         if (((i%ITER_OUT) == 0) && (rank == 0)) printf("Step : %d, error = %f\n", i, globalerror);
         if ((i%REDUCE) == 0) MPI_Allreduce(&localerror, &globalerror, 1, MPI_DOUBLE, MPI_MAX, FTI_COMM_WORLD);
