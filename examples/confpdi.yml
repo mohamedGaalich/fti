@@ -17,10 +17,13 @@ pdi:
             sizes:    [$nbLines, $M]     # if only one element, you can use size as a scalar
     plugins:
         fti:
-            config: path/to/the/file.fti
+            config: config.fti
             outputs:
                 i:
+                    id: 0
                 h:
+                    id: 1
                 g:
+                    id: 2
 
 
